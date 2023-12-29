@@ -50,9 +50,9 @@ object HouseRentPrediction {
         complete(HouseRequirement.validValues)
       },
       pathSingleSlash {
-        getFromFile(
-          "src/main/resources/static/index.html"
-        )
+        // Route Concatenation
+        getFromFile("src/main/resources/static/index.html") ~
+          getFromResource("static/index.html")
       }
     )
 
@@ -69,12 +69,11 @@ object HouseRentPrediction {
     point_of_contract = "Contact Agent"
   )
   def main(args: Array[String]): Unit = {
-    val result = model.predict(house.toInputMap().get)
-    print(result)
+    val port = sys.env.get("PORT").map(_.toInt).getOrElse(8080)
 
-    val bindingFuture = Http().newServerAt("localhost", 8080).bind(route)
+    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
     println(
-      s"Server now online. Please navigate to http://localhost:8080/hello\nPress RETURN to stop..."
+      s"Server now online. Please navigate to http://localhost:$port"
     )
     StdIn.readLine() // let it run until user presses return
     bindingFuture
