@@ -6,7 +6,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "house-rent-predicter",
-    version := "0.1.2-SNAPSHOT",
+    version := "0.1.3-SNAPSHOT",
 
     scalaVersion := scala3Version,
 

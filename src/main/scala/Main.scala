@@ -15,6 +15,8 @@ import spray.json.RootJsonFormat
 import akka.http.scaladsl.model.StatusCodes
 import housepredicter.models._
 import scala.io.StdIn
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 object HouseRentPrediction {
 
@@ -56,26 +58,13 @@ object HouseRentPrediction {
       }
     )
 
-  val house = HouseRequirement(
-    bedroom = 2,
-    size = 1200,
-    bathroom = 2,
-    floor_level = 1,
-    total_floor = 3,
-    area_type = "Carpet Area",
-    area_locality = "Bangalore",
-    furnishing_status = "Semi-Furnished",
-    tenant_preferred = "Bachelors/Family",
-    point_of_contract = "Contact Agent"
-  )
   def main(args: Array[String]): Unit = {
     val port = sys.env.get("PORT").map(_.toInt).getOrElse(8080)
-
     val bindingFuture = Http().newServerAt("0.0.0.0", port).bind(route)
     println(
       s"Server now online. Please navigate to http://0.0.0.0:$port"
     )
-    StdIn.readLine() // let it run until user presses return
+    Await.result(system.whenTerminated, Duration.Inf)
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port
       .onComplete(_ => system.terminate()) // and shutdown when done
