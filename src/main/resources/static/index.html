@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>House Requirement Form</title>
+	<script>
+		async function handleSubmit(event) {
+			event.preventDefault();
+
+			var form = document.getElementById('houseRequirementForm');
+			var formData = {
+				bedroom: +form.bedroom.value,
+				size: +form.size.value,
+				bathroom: +form.bathroom.value,
+				floor_level: +form.floor_level.value,
+				total_floor: +form.total_floor.value,
+				area_type: form.area_type.value,
+				area_locality: form.area_locality.value,
+				furnishing_status: form.furnishing_status.value,
+				tenant_preferred: form.tenant_preferred.value,
+				point_of_contract: form.point_of_contract.value
+			};
+
+			console.log('Form Data:', formData);
+			const response = await fetch('/predict', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			});
+
+			if (!response.ok) {
+				let errorResponse = await response.text();
+				document.getElementById('errorMessage').textContent = errorResponse || 'Error submitting form';
+			}
+			else {
+				const result = await response.json();
+				document.getElementById("result").textContent = result.price
+			}
+
+		}
+	</script>
+</head>
+
+<body>
+	<form onsubmit="handleSubmit(event)" id="houseRequirementForm">
+		<label for="bedroom">Bedrooms:</label>
+		<input type="number" id="bedroom" name="bedroom" required min="0"><br><br>
+
+		<label for="size">Size (in sq ft):</label>
+		<input type="number" id="size" name="size" step="0.01" required min="0"><br><br>
+
+		<label for="bathroom">Bathrooms:</label>
+		<input type="number" id="bathroom" name="bathroom" required min="0"><br><br>
+
+		<label for="floor_level">Floor Level:</label>
+		<input type="number" id="floor_level" name="floor_level" required min="0"><br><br>
+
+		<label for="total_floor">Total Floors in Building:</label>
+		<input type="number" id="total_floor" name="total_floor" required min="0"><br><br>
+
+		<label for="area_type">Area Type:</label>
+		<select id="area_type" name="area_type">
+			<option value="Carpet Area">Carpet Area</option>
+			<option value="Super Area">Super Area</option>
+		</select><br><br>
+
+		<label for="area_locality">Area Locality:</label>
+		<select id="area_locality" name="area_locality">
+			<option value="Bangalore">Bangalore</option>
+			<option value="Chennai">Chennai</option>
+			<option value="Delhi">Delhi</option>
+			<option value="Hyderabad">Hyderabad</option>
+			<option value="Kolkata">Kolkata</option>
+			<option value="Mumbai">Mumbai</option>
+		</select><br><br>
+
+		<label for="furnishing_status">Furnishing Status:</label>
+		<select id="furnishing_status" name="furnishing_status">
+			<option value="Furnished">Furnished</option>
+			<option value="Semi-Furnished">Semi-Furnished</option>
+			<option value="Unfurnished">Unfurnished</option>
+		</select><br><br>
+
+		<label for="tenant_preferred">Tenant Preferred:</label>
+		<select id="tenant_preferred" name="tenant_preferred">
+			<option value="Bachelors">Bachelors</option>
+			<option value="Bachelors/Family">Bachelors/Family</option>
+			<option value="Family">Family</option>
+		</select><br><br>
+
+		<label for="point_of_contract">Point of Contact:</label>
+		<select id="point_of_contract" name="point_of_contract">
+			<option value="Contact Agent">Contact Agent</option>
+			<option value="Contact Owner">Contact Owner</option>
+		</select><br><br>
+
+		<button type="submit">Submit</button>
+	</form>
+	<div id="errorMessage" style="color: red;"></div>
+	<div id="result" style="color: green;"></div>
+</body>
+
+</html>
