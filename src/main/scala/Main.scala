@@ -71,9 +71,9 @@ object HouseRentPrediction {
   def main(args: Array[String]): Unit = {
     val port = sys.env.get("PORT").map(_.toInt).getOrElse(8080)
 
-    val bindingFuture = Http().newServerAt("localhost", port).bind(route)
+    val bindingFuture = Http().newServerAt("0.0.0.0", port).bind(route)
     println(
-      s"Server now online. Please navigate to http://localhost:$port"
+      s"Server now online. Please navigate to http://0.0.0.0:$port"
     )
     StdIn.readLine() // let it run until user presses return
     bindingFuture
